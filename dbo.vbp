@@ -1,7 +1,7 @@
 Type=OleDll
-Reference=*\G{00020430-0000-0000-C000-000000000046}#2.0#0#C:\Windows\system32\stdole2.tlb#OLE Automation
-Reference=*\G{2A75196C-D9EB-4129-B803-931327F72D5C}#2.8#0#C:\Program Files\Common Files\System\ado\msado28.tlb#Microsoft ActiveX Data Objects 2.8 Library
-Reference=*\G{7C0FFAB0-CD84-11D0-949A-00A0C91110ED}#1.0#0#C:\Windows\System32\msdatsrc.tlb#Microsoft Data Source Interfaces
+Reference=*\G{00020430-0000-0000-C000-000000000046}#2.0#0#..\..\..\..\..\Windows\SysWOW64\stdole2.tlb#OLE Automation
+Reference=*\G{2A75196C-D9EB-4129-B803-931327F72D5C}#2.8#0#..\..\..\..\..\Program Files (x86)\Common Files\System\ado\msado28.tlb#Microsoft ActiveX Data Objects 2.8 Library
+Reference=*\G{7C0FFAB0-CD84-11D0-949A-00A0C91110ED}#1.0#0#..\..\..\..\..\Windows\System32\msdatsrc.tlb#Microsoft Data Source Interfaces
 Class=IDatabaseObjects; IDatabaseObjects.cls
 Class=IDatabaseObject; IDatabaseObject.cls
 Class=IGlobalDatabaseObjects; IGlobalDatabaseObjects.cls
@@ -58,22 +58,26 @@ Class=SQLBitwiseExpression; SQLBitwiseExpression.cls
 Class=SQLFieldExpression; SQLFieldExpression.cls
 Class=SQLValueExpression; SQLValueExpression.cls
 Class=SQLComparisonExpression; SQLComparisonExpression.cls
+Class=cCDECL; sqlite\cCDECL.cls
+Module=mSqlite; sqlite\mSqlite.bas
+Class=cSQLiteConnection; sqlite\cSQLiteConnection.cls
+Class=cSQLiteRecordset; sqlite\cSQLiteRecordset.cls
 Startup="(None)"
 HelpFile=""
 Title="DatabaseObjectsLibrary"
-ExeName32="DatabaseObjects_vb62.dll"
-Path32="F:\HiSystems\Systems\DatabaseObjectsVB6\Code\DatabaseObjectsVB6\bin"
+ExeName32="DatabaseObjects_vb6.dll"
+Path32="bin"
 Command32=""
 Name="DBO"
 HelpContextID="0"
-CompatibleMode="2"
+CompatibleMode="0"
 CompatibleEXE32="bin\DatabaseObjects_vb6.dll"
-VersionCompatible32="1"
 MajorVer=1
 MinorVer=10
-RevisionVer=2
+RevisionVer=13
 AutoIncrementVer=1
 ServerSupportFiles=0
+VersionCompanyName="Cocus Devices"
 CondComp="DebugSQL = 0"
 CompilationType=0
 OptimizationType=0
@@ -95,3 +99,5 @@ DebugStartupOption=0
 
 [MS Transaction Server]
 AutoRefresh=1
+
+

@@ -20,7 +20,9 @@ Attribute VB_Exposed = True
 
 Option Explicit
 
-Private pobjConnection As adodb.Connection
+'// Cocus 9-aug-2014 (Rev 0)
+Private pobjConnection As Object
+
 Private pstrConnectionString As String
 Private peConnectionType As ConnectionTypeEnum
 Private pintTransactionCount As Integer
@@ -34,12 +36,29 @@ Friend Sub Initialize(ByVal strConnectionString As String, ByVal eConnectionType
 
 End Sub
 
-Private Function CreateConnection() As adodb.Connection
+Private Sub Class_Terminate()
+    '// Cocus 9-aug-2014 (Rev 0)
+    If modMisc.ConnectionType = dboConnectionTypeSQLite Then
+        Set pobjConnection = Nothing
+    End If
+End Sub
 
-    Dim objConnection As adodb.Connection
+Public Function CreateConnection() As Object
+    Debug.Print "CalledCreateConnection"
+    Dim objConnection As Object
     
-    Set objConnection = New adodb.Connection
-    objConnection.ConnectionString = pstrConnectionString
+    '// Cocus 9-aug-2014 (Rev 0)
+    If modMisc.ConnectionType = dboConnectionTypeSQLite Then
+        If pobjConnection Is Nothing Then
+            Set objConnection = New cSQLiteConnection
+            Call objConnection.OpenFile(pstrConnectionString)
+        Else
+            Set objConnection = pobjConnection
+        End If
+    Else
+        Set objConnection = New adodb.Connection
+        objConnection.ConnectionString = pstrConnectionString
+    End If
     
     Set CreateConnection = objConnection
 
@@ -98,8 +117,15 @@ End Sub
 Private Sub ConnectionStart()
 
     If pintConnectionCount = 0 Then
-        Set pobjConnection = CreateConnection()
-        pobjConnection.Open
+        '// Cocus 9-aug-2014 (Rev 0)
+        
+        If Not (modMisc.ConnectionType = dboConnectionTypeSQLite) Then
+            Set pobjConnection = CreateConnection()
+            pobjConnection.Open
+        ElseIf pobjConnection Is Nothing Then
+            '// this will create a new cSQLiteConnection object, since there is no one created
+            Set pobjConnection = CreateConnection()
+        End If
     End If
     
     pintConnectionCount = pintConnectionCount + 1
@@ -115,8 +141,14 @@ Private Sub ConnectionFinished(Optional ByVal intConnectionCountToSubtract As In
         If pobjConnection Is Nothing Then
             RaiseError dboErrorGeneral, "Attempted to close a connection that is already closed"
         End If
-        pobjConnection.Close
-        Set pobjConnection = Nothing
+        
+        '// Cocus 9-aug-2014 (Rev 0)
+        If Not (modMisc.ConnectionType = dboConnectionTypeSQLite) Then
+            '// close the SQLite file only on class destruction.
+            pobjConnection.Close
+            Set pobjConnection = Nothing
+        End If
+        
     End If
  
 End Sub
@@ -158,7 +190,7 @@ End Sub
 
 Public Function Execute( _
     ByVal objSQL As ISQLStatement, _
-    ByVal eCommandType As CommandTypeEnum) As adodb.Recordset
+    ByVal eCommandType As CommandTypeEnum) As Object
  
     Dim objStatements(1 To 1) As ISQLStatement
     Set objStatements(1) = objSQL
@@ -169,16 +201,16 @@ End Function
  
 Public Function ExeceuteStatements( _
     ByRef objSQLStatements() As ISQLStatement, _
-    ByVal eCommandType As CommandTypeEnum) As adodb.Recordset
+    ByVal eCommandType As CommandTypeEnum) As Object
     
     Set ExeceuteStatements = ExecuteInternal(pobjConnection, objSQLStatements, eCommandType)
      
 End Function
  
 Private Function ExecuteInternal( _
-    ByVal objConnection As adodb.Connection, _
+    ByVal objConnection As Object, _
     ByRef objSQLStatements() As ISQLStatement, _
-    ByVal eCommandType As CommandTypeEnum) As adodb.Recordset
+    ByVal eCommandType As CommandTypeEnum) As Object
     
     If objConnection Is Nothing Then
         RaiseError dboErrorGeneral, "Connection is not open, call DBO.Connection.Start or DBO.Transactions.Begin"

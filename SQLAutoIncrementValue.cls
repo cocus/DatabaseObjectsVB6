@@ -52,6 +52,8 @@ Attribute SQL.VB_UserMemId = 0
         'The @@IDENTITY function is supported by MySQL from version 3.23.25
         'but use the original function here just in case
         SQL = "SELECT LAST_INSERT_ID() AS " & SQLConvertIdentifierName(Me.ReturnFieldName, Me.ConnectionType)
+    Case dboConnectionTypeSQLite
+        SQL = "SELECT last_insert_rowid() AS " & SQLConvertIdentifierName(Me.ReturnFieldName, Me.ConnectionType)
     End Select
 
 End Property

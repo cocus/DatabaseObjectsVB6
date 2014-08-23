@@ -29,8 +29,9 @@ Public Function SQLConvertIdentifierName( _
     Select Case eConnectionType
         Case dboConnectionTypeMicrosoftAccess, dboConnectionTypeSQLServer
             SQLConvertIdentifierName = "[" & Trim$(strIdentifierName) & "]"
-        Case dboConnectionTypeMySQL
+        Case dboConnectionTypeMySQL, dboConnectionTypeSQLite
             SQLConvertIdentifierName = "`" & Trim$(strIdentifierName) & "`"
+
     End Select
     
 End Function
@@ -75,7 +76,7 @@ Public Function SQLConvertValue( _
                 strValue = vValue
             Case vbString
                 Select Case eConnectionType
-                    Case dboConnectionTypeMicrosoftAccess, dboConnectionTypeSQLServer
+                    Case dboConnectionTypeMicrosoftAccess, dboConnectionTypeSQLServer, dboConnectionTypeSQLite
                         strValue = "'" & Replace$(vValue, "'", "''") & "'"
                     Case dboConnectionTypeMySQL
                         strValue = "'" & Replace$(Replace$(vValue, "\", "\\"), "'", "\'") & "'"

@@ -26,6 +26,9 @@ Public Enum ConnectionTypeEnum
     dboConnectionTypeSQLServer
     dboConnectionTypeMicrosoftAccess
     dboConnectionTypeMySQL
+    
+    '// Cocus 9-aug-2014 (Rev 0)
+    dboConnectionTypeSQLite
 End Enum
 
 Public Enum ErrorEnum
@@ -46,6 +49,10 @@ End Enum
 Private pobjByOrdinalLastCollection As IDatabaseObjects
 Private pobjConnection As ConnectionController
 Private pobjTransactions As DatabaseTransactions
+
+Public Property Get ConnectionType() As ConnectionTypeEnum
+    ConnectionType = modMisc.ConnectionType
+End Property
 
 Public Sub Connect( _
     ByVal strConnectionString As String, _
@@ -82,7 +89,7 @@ Public Function Object( _
     ByVal objCollection As IDatabaseObjects, _
     ByVal vDistinctValue As Variant) As IDatabaseObject
 
-    Dim objRecordset As adodb.Recordset
+    Dim objRecordset As Object
     Dim objSubset As SQLConditions
     Dim objSelect As SQLSelect
     Set objSelect = New SQLSelect
@@ -104,7 +111,12 @@ Public Function Object( _
     Set objRecordset = pobjConnection.Execute(objSelect, adCmdText)
     Set Object = ObjectFromRecordset(objCollection, objRecordset)
     
-    objRecordset.Close
+    '// Cocus 9-aug-2014 (Rev 0)
+    If modMisc.ConnectionType = dboConnectionTypeSQLite Then
+        Call objRecordset.CloseRS
+    Else
+        objRecordset.Close
+    End If
     pobjConnection.Finished
     
 End Function
@@ -121,7 +133,7 @@ Public Function ObjectLockRecordByDistinctValue( _
     ByVal objCollection As IDatabaseObjects, _
     ByVal vDistinctValue As Variant) As SQLFieldValues
 
-    Dim objRecordset As adodb.Recordset
+    Dim objRecordset As Object
     Dim objSubset As SQLConditions
     Dim objSelect As SQLSelect
     Set objSelect = New SQLSelect
@@ -142,7 +154,13 @@ Public Function ObjectLockRecordByDistinctValue( _
     
     Set objRecordset = pobjConnection.Execute(objSelect, adCmdText)
     Set ObjectLockRecordByDistinctValue = FieldValuesFromRecordSet(objCollection, objRecordset)
-    objRecordset.Close
+    
+    '// Cocus 9-aug-2014 (Rev 0)
+    If modMisc.ConnectionType = dboConnectionTypeSQLite Then
+        Call objRecordset.CloseRS
+    Else
+        objRecordset.Close
+    End If
     
     pobjConnection.Finished
     
@@ -152,7 +170,7 @@ Public Sub ObjectSave( _
     ByVal objCollection As IDatabaseObjects, _
     ByVal objItem As IDatabaseObject)
     
-    Dim objRecordset As adodb.Recordset
+    Dim objRecordset As Object
     Dim objFieldValues As SQLFieldValues
     Dim objSubset As SQLConditions
 
@@ -203,8 +221,15 @@ Public Sub ObjectSave( _
         If objCollection.DistinctFieldAutoIncrements Then
             Set objIncrementField = New SQLAutoIncrementValue
             Set objRecordset = pobjConnection.Execute(objIncrementField, adCmdText)
-            objItem.DistinctValue = objRecordset.Fields(0)
-            objRecordset.Close
+            
+            '// Cocus 9-aug-2014 (Rev 0)
+            If modMisc.ConnectionType = dboConnectionTypeSQLite Then
+                objItem.DistinctValue = objRecordset.FieldValue(0)
+                Call objRecordset.CloseRS
+            Else
+                objItem.DistinctValue = objRecordset.Fields(0)
+                objRecordset.Close
+            End If
         End If
                 
         objItem.IsSaved = True
@@ -219,7 +244,7 @@ Private Sub ItemKeyEnsureValid( _
     ByVal objItem As IDatabaseObject, _
     ByVal objFieldValues As SQLFieldValues)
     
-    Dim objRecordset As adodb.Recordset
+    Dim objRecordset As Object
     Dim objSelect As SQLSelect
     Dim vKeyFieldValue As Variant
     Dim objSubset As SQLConditions
@@ -260,7 +285,12 @@ Private Sub ItemKeyEnsureValid( _
             RaiseError dboErrorObjectAlreadyExists, TypeName(objItem) & " '" & vKeyFieldValue & "'"
         End If
         
-        objRecordset.Close
+        '// Cocus 9-aug-2014 (Rev 0)
+        If modMisc.ConnectionType = dboConnectionTypeSQLite Then
+            Call objRecordset.CloseRS
+        Else
+            objRecordset.Close
+        End If
         pobjConnection.Finished
     End If
     
@@ -311,16 +341,27 @@ Public Function ObjectGetFieldValue( _
 
     Me.Connection.Start
     
-    Dim objRecordset As adodb.Recordset
+    Dim objRecordset As Object
     Set objRecordset = Me.Connection.Execute(objSelect, adCmdText)
 
     If Not objRecordset.EOF Then
-        ObjectGetFieldValue = objRecordset(0).Value
+        '// Cocus 9-aug-2014 (Rev 0)
+        If modMisc.ConnectionType = dboConnectionTypeSQLite Then
+            ObjectGetFieldValue = objRecordset.FieldValue(0)
+        Else
+            ObjectGetFieldValue = objRecordset(0).Value
+        End If
     Else
         RaiseError dboErrorObjectDoesNotExist, "DistinctValue: " & objItem.DistinctValue
     End If
 
-    objRecordset.Close
+    '// Cocus 9-aug-2014 (Rev 0)
+    If modMisc.ConnectionType = dboConnectionTypeSQLite Then
+        Call objRecordset.CloseRS
+    Else
+        objRecordset.Close
+    End If
+    
     Me.Connection.Finished
 
 End Function
@@ -363,7 +404,7 @@ Public Function ObjectByKey( _
     ByVal objCollection As IDatabaseObjects, _
     ByVal vKey As Variant) As IDatabaseObject
     
-    Dim objRecordset As adodb.Recordset
+    Dim objRecordset As Object
     Dim objSubset As SQLConditions
     Dim objSelect As SQLSelect
     Set objSelect = New SQLSelect
@@ -392,7 +433,12 @@ Public Function ObjectByKey( _
         Set ObjectByKey = ObjectFromRecordset(objCollection, objRecordset)
     End If
     
-    objRecordset.Close
+    '// Cocus 9-aug-2014 (Rev 0)
+    If modMisc.ConnectionType = dboConnectionTypeSQLite Then
+        Call objRecordset.CloseRS
+    Else
+        objRecordset.Close
+    End If
     pobjConnection.Finished
     
 End Function
@@ -400,7 +446,7 @@ End Function
 Public Function ObjectByOrdinalFirst( _
     ByVal objCollection As IDatabaseObjects) As IDatabaseObject
 
-    Dim objRecordset As adodb.Recordset
+    Dim objRecordset As Object
     Dim objSelect As SQLSelect
     Dim objSubset As SQLConditions
     
@@ -420,7 +466,12 @@ Public Function ObjectByOrdinalFirst( _
     Set objRecordset = pobjConnection.Execute(objSelect, adCmdText)
     Set ObjectByOrdinalFirst = ObjectFromRecordset(objCollection, objRecordset)
     
-    objRecordset.Close
+    '// Cocus 9-aug-2014 (Rev 0)
+    If modMisc.ConnectionType = dboConnectionTypeSQLite Then
+        Call objRecordset.CloseRS
+    Else
+        objRecordset.Close
+    End If
     pobjConnection.Finished
     
 End Function
@@ -447,7 +498,7 @@ Public Function ObjectsCollection( _
     'Returns all of the objects in the collection and returns a Collection object
     'This is useful when implementing the For Each command
 
-    Dim objRecordset As adodb.Recordset
+    Dim objRecordset As Object
     Dim objSelect As SQLSelect
     Dim objObjects As Collection
     
@@ -472,7 +523,12 @@ Public Function ObjectsCollection( _
 
     Set ObjectsCollection = objObjects
     
-    objRecordset.Close
+    '// Cocus 9-aug-2014 (Rev 0)
+    If modMisc.ConnectionType = dboConnectionTypeSQLite Then
+        Call objRecordset.CloseRS
+    Else
+        objRecordset.Close
+    End If
     pobjConnection.Finished
     
 End Function
@@ -481,7 +537,7 @@ Public Function ObjectExists( _
     ByVal objCollection As IDatabaseObjects, _
     ByVal vKey As Variant) As Boolean
 
-    Dim objRecordset As adodb.Recordset
+    Dim objRecordset As Object
     Dim objSelect As SQLSelect
     Dim objSubset As SQLConditions
     
@@ -508,7 +564,12 @@ Public Function ObjectExists( _
     
     ObjectExists = Not objRecordset.EOF
     
-    objRecordset.Close
+    '// Cocus 9-aug-2014 (Rev 0)
+    If modMisc.ConnectionType = dboConnectionTypeSQLite Then
+        Call objRecordset.CloseRS
+    Else
+        objRecordset.Close
+    End If
     pobjConnection.Finished
 
 End Function
@@ -517,7 +578,7 @@ Public Function ObjectExistsByDistinctValue( _
     ByVal objCollection As IDatabaseObjects, _
     ByVal vDistinctValue As Variant) As Boolean
 
-    Dim objRecordset As adodb.Recordset
+    Dim objRecordset As Object
     Dim objSelect As SQLSelect
     Dim objSubset As SQLConditions
     
@@ -542,7 +603,12 @@ Public Function ObjectExistsByDistinctValue( _
     
     ObjectExistsByDistinctValue = Not objRecordset.EOF
     
-    objRecordset.Close
+    '// Cocus 9-aug-2014 (Rev 0)
+    If modMisc.ConnectionType = dboConnectionTypeSQLite Then
+        Call objRecordset.CloseRS
+    Else
+        objRecordset.Close
+    End If
     pobjConnection.Finished
 
 End Function
@@ -607,7 +673,7 @@ End Sub
 Public Function ObjectsCount( _
     ByVal objCollection As IDatabaseObjects) As Long
     
-    Dim objRecordset As adodb.Recordset
+    Dim objRecordset As Object
     Dim objSelect As SQLSelect
     Set objSelect = New SQLSelect
         
@@ -620,9 +686,15 @@ Public Function ObjectsCount( _
     pobjConnection.Start
     
     Set objRecordset = pobjConnection.Execute(objSelect, adCmdText)
-    ObjectsCount = ConvertNullToLong(objRecordset.Fields(0))
 
-    objRecordset.Close
+    '// Cocus 9-aug-2014 (Rev 0)
+    If modMisc.ConnectionType = dboConnectionTypeSQLite Then
+        ObjectsCount = ConvertNullToLong(objRecordset.FieldValue(0))
+        Call objRecordset.CloseRS
+    Else
+        ObjectsCount = ConvertNullToLong(objRecordset.Fields(0))
+        objRecordset.Close
+    End If
     pobjConnection.Finished
 
 End Function
@@ -631,7 +703,7 @@ Public Function ObjectsSearch( _
     ByVal objCollection As IDatabaseObjects, _
     ByVal objSearchCriteria As SQLConditions) As Collection
     
-    Dim objRecordset As adodb.Recordset
+    Dim objRecordset As Object
     Dim objSelect As SQLSelect
     Dim colResults As Collection
     
@@ -665,7 +737,12 @@ Public Function ObjectsSearch( _
     
     Set ObjectsSearch = colResults
     
-    objRecordset.Close
+    '// Cocus 9-aug-2014 (Rev 0)
+    If modMisc.ConnectionType = dboConnectionTypeSQLite Then
+        Call objRecordset.CloseRS
+    Else
+        objRecordset.Close
+    End If
     pobjConnection.Finished
     
 End Function
@@ -694,7 +771,7 @@ End Sub
 
 Public Function ObjectFromRecordset( _
     ByVal objCollection As IDatabaseObjects, _
-    ByVal rsSource As Recordset) As IDatabaseObject
+    ByVal rsSource As Object) As IDatabaseObject
     
     Set ObjectFromRecordset = ObjectFromFieldValues(objCollection, FieldValuesFromRecordSet(objCollection, rsSource))
 
@@ -702,12 +779,12 @@ End Function
 
 Private Function FieldValuesFromRecordSet( _
     ByVal objCollection As IDatabaseObjects, _
-    ByVal rsSource As Recordset) As SQLFieldValues
+    ByVal rsSource As Object) As SQLFieldValues
 
     Dim intIndex As Integer
     Dim strTablePrefix As String
     Dim objFieldValues As SQLFieldValues
-     
+    
     'check that the distinct field name exists
     If Not FieldExists(rsSource, objCollection.DistinctFieldName) Then
         RaiseError dboErrorGeneral, "DistinctFieldName '" & objCollection.DistinctFieldName & "' is invalid."
@@ -720,22 +797,35 @@ Private Function FieldValuesFromRecordSet( _
     Set objFieldValues = New SQLFieldValues
     strTablePrefix = objCollection.TableName & "."
 
+    
+    '// Cocus 9-aug-2014 (Rev 0)
     'copy the recordset values into the SQLFieldValues object
-    For intIndex = 0 To rsSource.Fields.Count - 1
-        With rsSource.Fields(intIndex)
+    If modMisc.ConnectionType = dboConnectionTypeSQLite Then
+        For intIndex = 0 To rsSource.FieldsCount
+            If InStr(1, rsSource.FieldName(intIndex), strTablePrefix, vbTextCompare) = 1 Then
+                objFieldValues.Add Mid$(rsSource.FieldName(intIndex), Len(strTablePrefix) + 1), rsSource.FieldValue(intIndex)
+            Else
+                objFieldValues.Add rsSource.FieldName(intIndex), rsSource.FieldValue(intIndex)
+            End If
+        Next intIndex
+    Else
+        For intIndex = 0 To rsSource.Fields.Count - 1
             'if the recordset has been loaded with a join then it may be prefixed with
             'the table name - this is the case with Microsoft Access
             'If so remove the table name if the table prefix is the same as objCollection.TableName
             'All of the other joined field with tablename prefixes on the fields will remain. This is fine considering
             'most of the time an inner join has been performed where the fields are equal in the 2 joined tables
-            If InStr(1, .Name, strTablePrefix, vbTextCompare) = 1 Then
-                objFieldValues.Add Mid$(.Name, Len(strTablePrefix) + 1), .Value
-            Else
-                objFieldValues.Add .Name, .Value
-            End If
-        End With
-    Next
+            With rsSource.Fields(intIndex)
+                If InStr(1, .Name, strTablePrefix, vbTextCompare) = 1 Then
+                    objFieldValues.Add Mid$(.Name, Len(strTablePrefix) + 1), .Value
+                Else
+                    objFieldValues.Add .Name, .Value
+                End If
+            End With
 
+        Next
+    End If
+    
     Set FieldValuesFromRecordSet = objFieldValues
 
 End Function
@@ -756,19 +846,25 @@ Public Function ObjectFromFieldValues( _
 End Function
 
 Private Function FieldExists( _
-    ByVal rsSource As Recordset, _
+    ByVal rsSource As Object, _
     ByVal strFieldName As String) As Boolean
     
     Dim intIndex As Integer
     Dim bExists As Boolean
     
-    'copy the recordset values into the
-    For intIndex = 0 To rsSource.Fields.Count - 1
-        If StrComp(rsSource.Fields(intIndex).Name, strFieldName, vbTextCompare) = 0 Then
-            bExists = True
-            Exit For
-        End If
-    Next
+    
+    '// Cocus 9-aug-2014 (Rev 0)
+    If modMisc.ConnectionType = dboConnectionTypeSQLite Then
+        bExists = rsSource.LookUpColumnName(strFieldName)
+    Else
+        'copy the recordset values into the
+        For intIndex = 0 To rsSource.Fields.Count - 1
+            If StrComp(rsSource.Fields(intIndex).Name, strFieldName, vbTextCompare) = 0 Then
+                bExists = True
+                Exit For
+            End If
+        Next
+    End If
     
     FieldExists = bExists
     

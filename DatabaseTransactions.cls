@@ -50,7 +50,7 @@ Public Sub Execute(ByVal objSQL As ISQLStatement)
 
 End Sub
 
-Public Function ExeceuteStatements(ByRef objSQLStatements() As ISQLStatement) As adodb.Recordset
+Public Function ExeceuteStatements(ByRef objSQLStatements() As ISQLStatement) As Object
     
     Set ExeceuteStatements = pobjConnection.ExeceuteStatements(objSQLStatements, adCmdUnknown)
      

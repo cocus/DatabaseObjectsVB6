@@ -156,8 +156,20 @@ Friend Property Get SQL(ByVal eConnectionType As ConnectionTypeEnum, Optional By
                     Case Else
                         strMode = "ALTER COLUMN"
                 End Select
+                
+                '// Cocus 9-aug-2014 (Rev 0)
+                If modMisc.ConnectionType = dboConnectionTypeSQLite Then
+                    RaiseError dboErrorNotSupported, "Column alteration is not available in SQLite"
+                    Exit Property
+                End If
             Case dboTableFieldsModeDrop:
                 strMode = "DROP COLUMN"
+                
+                '// Cocus 9-aug-2014 (Rev 0)
+                If modMisc.ConnectionType = dboConnectionTypeSQLite Then
+                    RaiseError dboErrorNotSupported, "Column alteration is not available in SQLite"
+                    Exit Property
+                End If
         End Select
     
         Select Case eConnectionType

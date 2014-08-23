@@ -229,6 +229,9 @@ Private Function DataTypeString( _
                     strDataType = "TINYINT UNSIGNED"
                 Case dboConnectionTypeSQLServer
                     strDataType = "TINYINT"
+                '// Cocus 9-aug-2014 (Rev 0)
+                Case dboConnectionTypeSQLite
+                    strDataType = "TINYINT"
             End Select
         Case dboDataTypeSmallInteger
             Select Case eConnection
@@ -237,6 +240,9 @@ Private Function DataTypeString( _
                 Case dboConnectionTypeMySQL
                     strDataType = "SMALLINT"
                 Case dboConnectionTypeSQLServer
+                    strDataType = "SMALLINT"
+                '// Cocus 9-aug-2014 (Rev 0)
+                Case dboConnectionTypeSQLite
                     strDataType = "SMALLINT"
             End Select
         Case dboDataTypeInteger
@@ -247,6 +253,9 @@ Private Function DataTypeString( _
                     strDataType = "INT"
                 Case dboConnectionTypeSQLServer
                     strDataType = "INTEGER"
+                '// Cocus 9-aug-2014 (Rev 0)
+                Case dboConnectionTypeSQLite
+                    strDataType = "INTEGER"
             End Select
         Case dboDataTypeBigInteger
             Select Case eConnection
@@ -255,6 +264,9 @@ Private Function DataTypeString( _
                 Case dboConnectionTypeMySQL
                     strDataType = "BIGINT"
                 Case dboConnectionTypeSQLServer
+                    strDataType = "BIGINT"
+                '// Cocus 9-aug-2014 (Rev 0)
+                Case dboConnectionTypeSQLite
                     strDataType = "BIGINT"
             End Select
         Case dboDataTypeCharacter
@@ -265,6 +277,9 @@ Private Function DataTypeString( _
                     strDataType = "CHAR(" & pintSize & ")"
                 Case dboConnectionTypeSQLServer
                     strDataType = "CHAR(" & pintSize & ")"
+                '// Cocus 9-aug-2014 (Rev 0)
+                Case dboConnectionTypeSQLite
+                    strDataType = "CHAR(" & pintSize & ")"
             End Select
         Case dboDataTypeUnicodeCharacter
             Select Case eConnection
@@ -273,6 +288,9 @@ Private Function DataTypeString( _
                 Case dboConnectionTypeMySQL
                     strDataType = "NCHAR(" & pintSize & ")"
                 Case dboConnectionTypeSQLServer
+                    strDataType = "NCHAR(" & pintSize & ")"
+                '// Cocus 9-aug-2014 (Rev 0)
+                Case dboConnectionTypeSQLite
                     strDataType = "NCHAR(" & pintSize & ")"
             End Select
         Case dboDataTypeVariableCharacter
@@ -283,6 +301,9 @@ Private Function DataTypeString( _
                     strDataType = "VARCHAR(" & pintSize & ")"
                 Case dboConnectionTypeSQLServer
                     strDataType = "VARCHAR(" & pintSize & ")"
+                '// Cocus 9-aug-2014 (Rev 0)
+                Case dboConnectionTypeSQLite
+                    strDataType = "VARCHAR(" & pintSize & ")"
             End Select
         Case dboDataTypeUnicodeVariableCharacter
             Select Case eConnection
@@ -291,6 +312,9 @@ Private Function DataTypeString( _
                 Case dboConnectionTypeMySQL
                     strDataType = "NVARCHAR(" & pintSize & ")"
                 Case dboConnectionTypeSQLServer
+                    strDataType = "NVARCHAR(" & pintSize & ")"
+                '// Cocus 9-aug-2014 (Rev 0)
+                Case dboConnectionTypeSQLite
                     strDataType = "NVARCHAR(" & pintSize & ")"
             End Select
         Case dboDataTypeDecimal
@@ -301,6 +325,9 @@ Private Function DataTypeString( _
                     strDataType = "DECIMAL(" & pintPrecision & "," & pintScale & ")"
                 Case dboConnectionTypeSQLServer
                     strDataType = "NUMERIC(" & pintPrecision & "," & pintScale & ")"
+                '// Cocus 9-aug-2014 (Rev 0)
+                Case dboConnectionTypeSQLite
+                    strDataType = "DECIMAL(" & pintPrecision & "," & pintScale & ")"
             End Select
         Case dboDataTypeReal
             Select Case eConnection
@@ -309,6 +336,9 @@ Private Function DataTypeString( _
                 Case dboConnectionTypeMySQL
                     strDataType = "FLOAT"
                 Case dboConnectionTypeSQLServer
+                    strDataType = "REAL"
+                '// Cocus 9-aug-2014 (Rev 0)
+                Case dboConnectionTypeSQLite
                     strDataType = "REAL"
             End Select
         Case dboDataTypeFloat
@@ -319,6 +349,9 @@ Private Function DataTypeString( _
                     strDataType = "DOUBLE"
                 Case dboConnectionTypeSQLServer
                     strDataType = "FLOAT"
+                '// Cocus 9-aug-2014 (Rev 0)
+                Case dboConnectionTypeSQLite
+                    strDataType = "FLOAT"
             End Select
         Case dboDataTypeSmallMoney
             Select Case eConnection
@@ -328,6 +361,9 @@ Private Function DataTypeString( _
                     strDataType = "DECIMAL(10,4)"
                 Case dboConnectionTypeSQLServer
                     strDataType = "SMALLMONEY"
+                '// Cocus 9-aug-2014 (Rev 0)
+                Case dboConnectionTypeSQLite
+                    strDataType = "DECIMAL(10,4)"
             End Select
         Case dboDataTypeMoney
             Select Case eConnection
@@ -337,6 +373,9 @@ Private Function DataTypeString( _
                     strDataType = "DECIMAL(19,4)"
                 Case dboConnectionTypeSQLServer
                     strDataType = "MONEY"
+                '// Cocus 9-aug-2014 (Rev 0)
+                Case dboConnectionTypeSQLite
+                    strDataType = "DECIMAL(19,4)"
             End Select
         Case dboDataTypeBoolean
             Select Case eConnection
@@ -346,6 +385,9 @@ Private Function DataTypeString( _
                     strDataType = "BIT"
                 Case dboConnectionTypeSQLServer
                     strDataType = "BIT"
+                '// Cocus 9-aug-2014 (Rev 0)
+                Case dboConnectionTypeSQLite
+                    strDataType = "BOOLEAN"
             End Select
         Case dboDataTypeSmallDateTime
             Select Case eConnection
@@ -355,6 +397,9 @@ Private Function DataTypeString( _
                     strDataType = "DATETIME"
                 Case dboConnectionTypeSQLServer
                     strDataType = "SMALLDATETIME"
+                '// Cocus 9-aug-2014 (Rev 0)
+                Case dboConnectionTypeSQLite
+                    strDataType = "DATETIME"
             End Select
         Case dboDataTypeDateTime
             Select Case eConnection
@@ -363,6 +408,9 @@ Private Function DataTypeString( _
                 Case dboConnectionTypeMySQL
                     strDataType = "DATETIME"
                 Case dboConnectionTypeSQLServer
+                    strDataType = "DATETIME"
+                '// Cocus 9-aug-2014 (Rev 0)
+                Case dboConnectionTypeSQLite
                     strDataType = "DATETIME"
             End Select
         Case dboDataTypeTimeStamp
@@ -373,6 +421,9 @@ Private Function DataTypeString( _
                     strDataType = "TIMESTAMP"
                 Case dboConnectionTypeSQLServer
                     strDataType = "TIMESTAMP"
+                '// Cocus 9-aug-2014 (Rev 0)
+                Case dboConnectionTypeSQLite
+                    strDataType = "DATETIME"
             End Select
         Case dboDataTypeText
             Select Case eConnection
@@ -381,6 +432,9 @@ Private Function DataTypeString( _
                 Case dboConnectionTypeMySQL
                     strDataType = "LONGTEXT"
                 Case dboConnectionTypeSQLServer
+                    strDataType = "TEXT"
+                '// Cocus 9-aug-2014 (Rev 0)
+                Case dboConnectionTypeSQLite
                     strDataType = "TEXT"
             End Select
         Case dboDataTypeUnicodeText
@@ -391,6 +445,9 @@ Private Function DataTypeString( _
                     strDataType = "LONGTEXT CHARACTER SET UTF8"
                 Case dboConnectionTypeSQLServer
                     strDataType = "NTEXT"
+                '// Cocus 9-aug-2014 (Rev 0)
+                Case dboConnectionTypeSQLite
+                    strDataType = "TEXT"
             End Select
         Case dboDataTypeBinary
             Select Case eConnection
@@ -400,6 +457,9 @@ Private Function DataTypeString( _
                     strDataType = "BLOB"
                 Case dboConnectionTypeSQLServer
                     strDataType = "BINARY"
+                '// Cocus 9-aug-2014 (Rev 0)
+                Case dboConnectionTypeSQLite
+                    strDataType = "BLOB"
             End Select
         Case dboDataTypeVariableBinary
             Select Case eConnection
@@ -409,6 +469,9 @@ Private Function DataTypeString( _
                     strDataType = "BLOB"
                 Case dboConnectionTypeSQLServer
                     strDataType = "VARBINARY"
+                '// Cocus 9-aug-2014 (Rev 0)
+                Case dboConnectionTypeSQLite
+                    strDataType = "BLOB"
             End Select
         Case dboDataTypeImage
             Select Case eConnection
@@ -418,6 +481,9 @@ Private Function DataTypeString( _
                     strDataType = "LONGBLOB"
                 Case dboConnectionTypeSQLServer
                     strDataType = "IMAGE"
+                '// Cocus 9-aug-2014 (Rev 0)
+                Case dboConnectionTypeSQLite
+                    strDataType = "BLOB"
             End Select
     End Select
     
@@ -475,6 +541,13 @@ Private Function ColumnOptions( _
                 colOptions.Add "IDENTITY"
             Case dboConnectionTypeMySQL
                 colOptions.Add "AUTO_INCREMENT"
+                'must be set to a key
+                If peKeyType = dboKeyTypeNone Then
+                    peKeyType = dboKeyTypeUnique
+                End If
+            '// Cocus 9-aug-2014 (Rev 0)
+            Case dboConnectionTypeSQLite
+                colOptions.Add "AUTOINCREMENT"
                 'must be set to a key
                 If peKeyType = dboKeyTypeNone Then
                     peKeyType = dboKeyTypeUnique

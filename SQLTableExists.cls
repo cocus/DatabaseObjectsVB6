@@ -57,6 +57,11 @@ Public Property Get SQL() As String
             End With
         Case dboConnectionTypeMySQL
             strSQL = "SHOW TABLES LIKE " & SQLConvertValue(Me.Name, Me.ConnectionType)
+        
+        '// Cocus 9-aug-2014 (Rev 0)
+        Case dboConnectionTypeSQLite
+            strSQL = "SELECT Name FROM sqlite_master WHERE type='table' AND Name=" & SQLConvertValue(Me.Name, Me.ConnectionType) & ";"
+            
         Case dboConnectionTypeSQLServer
             Set objSelect = New SQLSelect
             With objSelect

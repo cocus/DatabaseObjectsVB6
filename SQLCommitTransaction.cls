@@ -39,6 +39,9 @@ Public Property Get SQL() As String
             SQL = "COMMIT TRANSACTION"
         Case dboConnectionTypeMySQL
             SQL = "COMMIT"
+        '// Cocus 9-aug-2014 (Rev 0)
+        Case dboConnectionTypeSQLite
+            SQL = "COMMIT TRANSACTION"
         Case Else
             RaiseError dboErrorInvalidArgument
     End Select

@@ -39,6 +39,9 @@ Public Property Get SQL() As String
             SQL = "ROLLBACK TRANSACTION"
         Case dboConnectionTypeMySQL
             SQL = "ROLLBACK"
+        '// Cocus 9-aug-2014 (Rev 0)
+        Case dboConnectionTypeSQLite
+            SQL = "ROLLBACK"
         Case Else
             RaiseError dboErrorInvalidArgument
     End Select

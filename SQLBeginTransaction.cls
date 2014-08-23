@@ -39,6 +39,9 @@ Public Property Get SQL() As String
             SQL = "BEGIN TRANSACTION"
         Case dboConnectionTypeMySQL
             SQL = "START TRANSACTION"
+        '// Cocus 9-aug-2014 (Rev 0)
+        Case dboConnectionTypeSQLite
+            SQL = "BEGIN TRANSACTION"
         Case Else
             RaiseError dboErrorInvalidArgument
     End Select

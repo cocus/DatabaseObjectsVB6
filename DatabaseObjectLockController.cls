@@ -91,7 +91,7 @@ Public Property Get IsLockedByCurrentUser(ByVal objCollection As IDatabaseObject
     Set objFilter = New SQLCondition
     
     objFilter.FieldName = "UserID"
-    objFilter.compare = dboComparisonEqualTo
+    objFilter.Compare = dboComparisonEqualTo
     objFilter.Value = pstrCurrentUserID
 
     IsLockedByCurrentUser = LockRecordExists(objCollection.TableName, objObject, objFilter)
@@ -114,16 +114,25 @@ Public Property Get LockedByUserID(ByVal objCollection As IDatabaseObjects, ByVa
 
     pobjConnection.Start
     
-    Dim objRecordset As adodb.Recordset
+    Dim objRecordset As Object
     Set objRecordset = pobjConnection.Execute(objSelect, adCmdText)
     
     If Not objRecordset.EOF Then
-        LockedByUserID = CStr(objRecordset(0))
+        '// Cocus 9-aug-2014 (Rev 0)
+        If modMisc.ConnectionType = dboConnectionTypeSQLite Then
+            LockedByUserID = CStr(objRecordset.FieldValue(0))
+        Else
+            LockedByUserID = CStr(objRecordset(0))
+        End If
     Else
         RaiseError dboErrorGeneral, "Object is not locked"
     End If
-
-    objRecordset.Close
+    '// Cocus 9-aug-2014 (Rev 0)
+    If modMisc.ConnectionType = dboConnectionTypeSQLite Then
+        Call objRecordset.CloseRS
+    Else
+        objRecordset.Close
+    End If
     pobjConnection.Finished
 
 End Property
@@ -146,12 +155,18 @@ Private Function LockRecordExists( _
 
     pobjConnection.Start
     
-    Dim objRecordset As adodb.Recordset
+    Dim objRecordset As Object
     Set objRecordset = pobjConnection.Execute(objSelect, adCmdText)
 
-    LockRecordExists = CInt(objRecordset(0)) <> 0
-
-    objRecordset.Close
+    '// Cocus 9-aug-2014 (Rev 0)
+    If modMisc.ConnectionType = dboConnectionTypeSQLite Then
+        LockRecordExists = CInt(objRecordset.FieldValue(0)) <> 0
+        Call objRecordset.CloseRS
+    Else
+        LockRecordExists = CInt(objRecordset(0)) <> 0
+        objRecordset.Close
+    End If
+    
     pobjConnection.Finished
 
 End Function
